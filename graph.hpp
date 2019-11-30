@@ -3,6 +3,7 @@
 #include <random>
 #include <iostream>
 #include <iomanip>
+#include <fstream>
 
 
 using std::vector;
@@ -13,6 +14,10 @@ using std::cin;
 
 
 //--------------------
+
+
+
+
 
 class edge
 {
@@ -25,6 +30,28 @@ public:
 private:
 
 };
+
+
+
+
+
+class edge_record
+{
+public:
+	edge_record(int fir, int sec, float wei) {first = fir; second = sec; weight = wei;}
+
+	int first;
+	int second;
+
+	float weight;
+
+private:
+
+};
+
+
+
+
 
 //--------------------
 
@@ -48,40 +75,101 @@ private:
 
 };
 
+
+
+
+
+
+
+
+
+
+
+
+
 //--------------------
 
 class graph
 {
 public:
-	graph(int num, int connections) { nodes.clear(); nodes.resize(num); make_connections(connections); }
+	graph(int num, int connections);
 
-	void make_connections(int how_many);
-	void add_edge(int first, int second, float weight);
 
-	void show();
+	void create_random_edge_log(int how_many);
+	void add_edge_to_log(int first, int second, float weight);
+
+	void reconstruct(); //clears nodes,
+
+	void show_graph();
+	void show_edge_log();
+	void show_mst();
+
+	void save_to_file(std::string filename);
+	void load_from_file(std::string filename);
 
 private:
 	vector<node> nodes;
-
+	vector<edge_record> edge_log;
+	int num_nodes, num_connections;
 };
 
+
+
+
+
+
+
+
+
+
 //--------------------
-void graph::add_edge(int first, int second, float weight)
+
+graph::graph(int num, int connections)
+{
+	nodes.clear(); 			edge_log.clear();
+	nodes.resize(num);
+
+	num_nodes = num;
+	num_connections = connections;
+
+	create_random_edge_log(connections);
+	reconstruct();
+}
+
+
+
+
+
+
+
+
+
+
+//--------------------
+void graph::add_edge_to_log(int first, int second, float weight)
 {
 
 	//I'm kind of thinking about making a random chance for one or the other to not get added
 
-	edge temp(second, weight);	//order is destination, weight
-	nodes[first].add_link(temp);
-
-	temp.destination = first;
-	nodes[second].add_link(temp);
+	edge_log.push_back(edge_record(first,second,weight));
 }
+
+
+
+
+
+
+
 
 //--------------------
 
-void graph::make_connections(int how_many)
+void graph::create_random_edge_log(int how_many)
 {
+
+	cout << "now making " << how_many << " random weighted connections" << endl;
+
+	edge_log.clear();
+
 	//random number generation
   std::random_device rd;
   std::mt19937 mt(rd());
@@ -100,31 +188,48 @@ void graph::make_connections(int how_many)
 
 			float weight = dist1(mt);
 
-			cout << i << " : making connection from " << first << " to " << second << " and back with weight " << weight << endl;
+			// cout << std::setw(4) <<  i << " : making connection from " <<  std::setw(4) << first << " to " <<  std::setw(4) << second << " and back with weight " << weight << endl;
 
-			add_edge(first, second, weight);
+			add_edge_to_log(first, second, weight);
 
 		}
 
 		cout << endl << endl;
 	}
-
-
 }
 
 
-void graph::show(){
+
+
+
+
+
+
+
+
+
+
+//--------------------
+
+void graph::show_graph(){
 
     if(!nodes.empty())
 		{
         for(int i = 0; i < nodes.size(); i++)
         {
-            cout << "node " << i << " has links to: ";
+            cout << "node " << std::setw(4) << i << " has links to: ";
             if(!nodes[i].alone())
             {
                 for(int j = 0; j < nodes[i].size(); j++)
                 {//j indexes the list of nodes, no other significance, unless you ordered them ahead of time
-									cout << std::fixed << std::setprecision(2) << nodes[i].get_link(j).destination << "(" << nodes[i].get_link(j).weight << ") ";
+									cout << std::fixed << std::setprecision(1) << std::setw(4); //only show two decimal placese, i.e. 90.04
+									cout << nodes[i].get_link(j).destination << "(" << nodes[i].get_link(j).weight << ") ";
+
+									if(j > 4)
+									{
+										cout << "...";
+										break;
+									}
                 }
                 cout << endl;
             }
@@ -140,4 +245,201 @@ void graph::show(){
 
         std::cout<<std::endl<<"Graph is empty!"<<std::endl<<std::endl;
     }
+		cout << endl;
+}
+
+
+
+
+
+
+
+
+
+//--------------------
+
+void graph::show_edge_log()
+{
+
+	for(int i = 0; i < edge_log.size(); i++)
+	{
+		cout << std::setw(4) <<  i << " : making connection from " <<  std::setw(4) << edge_log[i].first << " to " <<  std::setw(4) << edge_log[i].second << " and back with weight " << edge_log[i].weight << endl;
+	}
+}
+
+
+
+
+
+
+
+
+
+
+// void primMST(vector<pair<int,int> > adj[], int V)
+// {
+//     // Create a priority queue to store vertices that
+//     // are being preinMST. This is weird syntax in C++.
+//     // Refer below link for details of this syntax
+//     // http://geeksquiz.com/implement-min-heap-using-stl/
+//     priority_queue< iPair, vector <iPair> , greater<iPair> > pq;
+
+//     int src = 0; // Taking vertex 0 as source
+
+//     // Create a vector for keys and initialize all
+//     // keys as infinite (INF)
+//     vector<int> key(V, INF);
+
+//     // To store parent array which in turn store MST
+//     vector<int> parent(V, -1);
+
+//     // To keep track of vertices included in MST
+//     vector<bool> inMST(V, false);
+
+//     // Insert source itself in priority queue and initialize
+//     // its key as 0.
+//     pq.push(make_pair(0, src));
+//     key[src] = 0;
+
+//     /* Looping till priority queue becomes empty */
+//     while (!pq.empty())
+//     {
+//         // The first vertex in pair is the minimum key
+//         // vertex, extract it from priority queue.
+//         // vertex label is stored in second of pair (it
+//         // has to be done this way to keep the vertices
+//         // sorted key (key must be first item
+//         // in pair)
+//         int u = pq.top().second;
+//         pq.pop();
+
+//         inMST[u] = true; // Include vertex in MST
+
+//         // Traverse all adjacent of u
+//         for (auto x : adj[u])
+//         {
+//             // Get vertex label and weight of current adjacent
+//             // of u.
+//             int v = x.first;
+//             int weight = x.second;
+
+//             // If v is not in MST and weight of (u,v) is smaller
+//             // than current key of v
+//             if (inMST[v] == false && key[v] > weight)
+//             {
+//                 // Updating key of v
+//                 key[v] = weight;
+//                 pq.push(make_pair(key[v], v));
+//                 parent[v] = u;
+//             }
+//         }
+//     }
+
+//     // Print edges of MST using parent array
+//     for (int i = 1; i < V; ++i)
+//         printf("%d - %d\n", parent[i], i);
+// }
+
+//--------------------
+
+void graph::show_mst()
+{//implementing prims algorithm
+
+}
+
+
+
+
+
+
+
+//--------------------
+
+void graph::reconstruct()
+{
+
+	nodes.clear();
+
+	nodes.resize(num_nodes);
+
+	for(int i = 0; i < edge_log.size(); i++)
+	{
+		edge temp(edge_log[i].second, edge_log[i].weight);	//order is destination, weight
+		nodes[edge_log[i].first].add_link(temp);
+
+		temp.destination = edge_log[i].first;
+		nodes[edge_log[i].second].add_link(temp);
+	}
+
+	cout << "reconstructed " << edge_log.size() << " edges" << endl << endl;
+
+}
+
+
+
+
+
+
+
+
+
+//--------------------
+
+	//expected file format is as follows:
+			//	<num_nodes> <num_connections>
+			//	<first> <second> <weight>
+			//	<first> <second> <weight>
+			//	<first> <second> <weight>
+			//		...  //num_connections many of these
+
+//--------------------
+
+void graph::save_to_file(std::string filename)
+{
+	//put the edge log into a file
+	std::ofstream file;
+	file.open (filename.c_str());
+
+	cout << "writing " << edge_log.size() << " edges to a file, between " << num_nodes << " nodes" << endl;
+	file << std::setw(4) << num_nodes << "  " << std::setw(4) << num_connections << endl;
+
+	for (int i = 0; i < edge_log.size(); i++)
+	{
+		file << std::setw(4) << edge_log[i].first << " " << std::setw(4) << edge_log[i].second << " " << std::setw(4) << edge_log[i].weight << endl;
+	}
+
+	file.close();
+}
+
+//--------------------
+
+void graph::load_from_file(std::string filename)
+{
+	//get the edge log from a file
+	edge_log.clear();
+
+
+	std::ifstream file (filename.c_str());
+
+ 	if (file.is_open())
+	{
+		//read in num_nodes, num_connections
+		file >> num_nodes >> num_connections;
+
+		cout << "loading " << num_nodes << " nodes, " << num_connections << " connections" << endl;
+
+		int first, second;
+		float weight;
+
+		for(int i = 0; i < num_connections; i++)
+		{
+			file >> first >> second >> weight;
+			add_edge_to_log(first, second, weight);
+		}
+
+	}
+
+	// reconstruct
+	reconstruct();
+
 }
