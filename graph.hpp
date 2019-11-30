@@ -14,11 +14,11 @@ using std::cin;
 
 
 
+
+
+
+
 //--------------------
-
-
-
-
 
 class edge
 {
@@ -147,8 +147,8 @@ graph::graph(int num, int connections)
 
 
 
-
 //--------------------
+
 void graph::add_edge_to_log(int first, int second, float weight)
 {
 	//I'm kind of thinking about making a random chance for one or the other to not get added
@@ -435,7 +435,7 @@ void graph::load_from_file(std::string filename)
 
 	}
 
-	// reconstruct
+	// reconstruct the graph, based on this edge_log
 	reconstruct();
 
 }
