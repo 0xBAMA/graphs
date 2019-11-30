@@ -13,6 +13,8 @@ int main(int argc, char const *argv[])
 
 	g.show_graph();
 
+	g.show_mst();
+
 
 	return 0;
 

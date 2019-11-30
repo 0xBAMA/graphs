@@ -67,8 +67,8 @@ public:
 
 	edge get_link(int num) { return linkages[num]; }
 
-private:
 	vector<edge> linkages;
+private:
 
 	float value;
 
@@ -269,80 +269,78 @@ void graph::show_edge_log()
 
 
 
+//--------------------
 
+bool comparison(const edge &a, const edge &b)
+{//  this is used to satisfy the heap functions parameter format
+  return (a.weight > b.weight);
+}
 
-
-
-
-
-// void primMST(vector<pair<int,int> > adj[], int V)
-// {
-//     // Create a priority queue to store vertices that
-//     // are being preinMST. This is weird syntax in C++.
-//     // Refer below link for details of this syntax
-//     // http://geeksquiz.com/implement-min-heap-using-stl/
-//     priority_queue< iPair, vector <iPair> , greater<iPair> > pq;
-
-//     int src = 0; // Taking vertex 0 as source
-
-//     // Create a vector for keys and initialize all
-//     // keys as infinite (INF)
-//     vector<int> key(V, INF);
-
-//     // To store parent array which in turn store MST
-//     vector<int> parent(V, -1);
-
-//     // To keep track of vertices included in MST
-//     vector<bool> inMST(V, false);
-
-//     // Insert source itself in priority queue and initialize
-//     // its key as 0.
-//     pq.push(make_pair(0, src));
-//     key[src] = 0;
-
-//     /* Looping till priority queue becomes empty */
-//     while (!pq.empty())
-//     {
-//         // The first vertex in pair is the minimum key
-//         // vertex, extract it from priority queue.
-//         // vertex label is stored in second of pair (it
-//         // has to be done this way to keep the vertices
-//         // sorted key (key must be first item
-//         // in pair)
-//         int u = pq.top().second;
-//         pq.pop();
-
-//         inMST[u] = true; // Include vertex in MST
-
-//         // Traverse all adjacent of u
-//         for (auto x : adj[u])
-//         {
-//             // Get vertex label and weight of current adjacent
-//             // of u.
-//             int v = x.first;
-//             int weight = x.second;
-
-//             // If v is not in MST and weight of (u,v) is smaller
-//             // than current key of v
-//             if (inMST[v] == false && key[v] > weight)
-//             {
-//                 // Updating key of v
-//                 key[v] = weight;
-//                 pq.push(make_pair(key[v], v));
-//                 parent[v] = u;
-//             }
-//         }
-//     }
-
-//     // Print edges of MST using parent array
-//     for (int i = 1; i < V; ++i)
-//         printf("%d - %d\n", parent[i], i);
-// }
 
 //--------------------
 
 void graph::show_mst()
 {//implementing prims algorithm
+
+	vector<edge> min_heap;	//used to sort by weights
+
+	int src = 0; // Taking vertex 0 as source
+
+  // Create a vector for keys and initialize  keys as infinite (99)
+  vector<int> key(num_nodes, 99);
+
+  // To store parent array which in turn store MST
+  vector<int> parent(num_nodes, -1);
+
+  // To keep track of vertices included in MST
+  vector<bool> inMST(num_nodes, false);
+
+  // Insert source itself in priority queue and initialize its key as 0.
+  min_heap.push_back(edge(src, 0));
+  key[src] = 0;
+
+
+
+	/* Looping till priority queue becomes empty */
+	while (!min_heap.empty())
+	{
+		//create the heap
+		std::make_heap(min_heap.begin(), min_heap.end(), comparison);// all new entries get sorted with make_heap()
+
+	    // The first vertex in pair is the minimum weight
+	    // vertex, extract it from the heap.
+	    // vertex label is stored in destination (it
+	    // is done this way to keep the vertices
+	    // sorted by weight (weight is key)
+
+  	int u = min_heap[0].destination;
+		min_heap.erase(min_heap.begin()); // we erase the first element (pop)
+
+    inMST[u] = true; // Include vertex in MST
+
+    // Traverse all adjacent of u
+    for (auto x : nodes[u].linkages)
+    {
+      // Get vertex label and weight of current adjacent of u.
+      int v = x.destination;
+      int weight = x.weight;
+
+      // If v is not in MST and weight of (u,v) is smaller
+      // than current key of v
+      if (inMST[v] == false && key[v] > weight)
+      {
+        // Updating key of v
+        key[v] = weight;
+        min_heap.push_back(edge(v, key[v]));
+        parent[v] = u;
+      }
+    }
+	}
+
+	// Print edges of MST using parent array
+	for (int i = 1; i < num_nodes; ++i)
+	    printf("%d - %d\n", parent[i], i);
+
 
 }
 
