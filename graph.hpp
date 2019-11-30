@@ -2,6 +2,8 @@
 #include <vector>
 #include <random>
 #include <iostream>
+#include <iomanip>
+
 
 using std::vector;
 using std::cout;
@@ -15,7 +17,7 @@ using std::cin;
 class edge
 {
 public:
-	edge(int destination, float weight) { destination = destination; weight = weight; }
+	edge(int dest, float wei) { destination = dest; weight = wei; }
 
 	int destination;	//id of target node
 	float weight;
@@ -87,22 +89,28 @@ void graph::make_connections(int how_many)
 	if(nodes.size() != 0)
 	{
 
-		std::uniform_real_distribution<float> dist1(0.3,9.8); //input values
+		std::uniform_real_distribution<float> dist1(0.3f,9.8f); //input values
 		std::uniform_int_distribution<int> dist2(0,nodes.size()-1);  //nodes
 
 		for(int i = 0; i < how_many; i++)
 		{
 
-			add_edge(dist2(mt), dist2(mt), dist1(mt));
+			int first = dist2(mt);
+			int second = dist2(mt);
+
+			float weight = dist1(mt);
+
+			cout << i << " : making connection from " << first << " to " << second << " and back with weight " << weight << endl;
+
+			add_edge(first, second, weight);
 
 		}
+
+		cout << endl << endl;
 	}
 
 
 }
-
-
-// edge get_link(int num) { return linkages[num]; }
 
 
 void graph::show(){
@@ -115,8 +123,8 @@ void graph::show(){
             if(!nodes[i].alone())
             {
                 for(int j = 0; j < nodes[i].size(); j++)
-                {
-										cout << nodes[i].get_link(j).destination << "(" << nodes[i].get_link(j).weight << ") ";
+                {//j indexes the list of nodes, no other significance, unless you ordered them ahead of time
+									cout << std::fixed << std::setprecision(2) << nodes[i].get_link(j).destination << "(" << nodes[i].get_link(j).weight << ") ";
                 }
                 cout << endl;
             }
