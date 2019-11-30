@@ -4,6 +4,7 @@
 #include <iostream>
 #include <iomanip>
 #include <fstream>
+#include <algorithm>
 
 
 using std::vector;
@@ -126,7 +127,9 @@ private:
 
 graph::graph(int num, int connections)
 {
-	nodes.clear(); 			edge_log.clear();
+	nodes.clear();
+	edge_log.clear();
+
 	nodes.resize(num);
 
 	num_nodes = num;
@@ -148,9 +151,7 @@ graph::graph(int num, int connections)
 //--------------------
 void graph::add_edge_to_log(int first, int second, float weight)
 {
-
 	//I'm kind of thinking about making a random chance for one or the other to not get added
-
 	edge_log.push_back(edge_record(first,second,weight));
 }
 
@@ -260,13 +261,11 @@ void graph::show_graph(){
 
 void graph::show_edge_log()
 {
-
 	for(int i = 0; i < edge_log.size(); i++)
 	{
 		cout << std::setw(4) <<  i << " : making connection from " <<  std::setw(4) << edge_log[i].first << " to " <<  std::setw(4) << edge_log[i].second << " and back with weight " << edge_log[i].weight << endl;
 	}
 }
-
 
 
 
