@@ -341,7 +341,6 @@ void graph::show_mst()
 	for (int i = 1; i < num_nodes; ++i)
 	    printf("%d - %d\n", parent[i], i);
 
-
 }
 
 
