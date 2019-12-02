@@ -503,7 +503,7 @@ void graph::reconstruct()
 
 
 	std::uniform_real_distribution<float> dist(-6.5f,6.5f);
-	std::uniform_real_distribution<float> scale(0.8f,2.0f);
+	std::uniform_real_distribution<float> scale(0.3f,1.6f);
 
 
 
@@ -515,7 +515,7 @@ void graph::reconstruct()
 	{
 		// nodes[i].location = glm::vec3(distx(mt), disty(mt), distz(mt));
 		nodes[i].location = 50.0f*scale(mt)*glm::normalize(glm::vec3(dist(mt), dist(mt), dist(mt)))+glm::vec3(255,127,127);
-		nodes[i].location.x = 1.7f * (nodes[i].location.x - 255) + 255;
+		nodes[i].location.x = 1.4f * (nodes[i].location.x - 255) + 255;
 		verticies.push_back(nodes[i].location);
 	}
 
