@@ -422,9 +422,6 @@ void graph::reconstruct()
 	std::uniform_real_distribution<float> distyz(50.0f,205.0f);
 
 
-
-
-
 	PerlinNoise p;
 
 	float s = 0.05;

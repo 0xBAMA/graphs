@@ -7,4 +7,4 @@ make:
 run:
 	@echo -e "\e[31mTESTING\e[0m"
 	# ./exe 162 600
-	./exe 5 18
+	./exe 20 75
