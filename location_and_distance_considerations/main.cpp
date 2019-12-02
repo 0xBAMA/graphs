@@ -5,7 +5,6 @@ int main(int argc, char const *argv[])
 
 	graph g(atoi(argv[1]), atoi(argv[2]));
 
-
 	g.show_graph();
 
 
@@ -17,7 +16,7 @@ int main(int argc, char const *argv[])
 	g.show_mst();
 
 
-	g.output_for_voraldo();
+	g.output_for_voraldo(); 
 
 
 

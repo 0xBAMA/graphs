@@ -121,7 +121,6 @@ class graph
 public:
 	graph(int num, int connections);
 
-
 	void create_random_edge_log(int how_many);
 	void add_edge_to_log(int first, int second, float weight);
 
@@ -211,6 +210,13 @@ void graph::create_random_edge_log(int how_many)
 
 	if(nodes.size() != 0)
 	{
+
+
+
+
+
+
+
 
 		std::uniform_real_distribution<float> dist1(0.3f,9.8f); //input values
 		std::uniform_int_distribution<int> dist2(0,nodes.size()-1);  //nodes
@@ -402,19 +408,121 @@ void graph::reconstruct()
   std::random_device rd;
   std::mt19937 mt(rd());
 
-	std::uniform_real_distribution<float> distx(0.3f,256.0f); //input values
-	std::uniform_real_distribution<float> disty(0.3f,256.0f);
-	std::uniform_real_distribution<float> distz(0.3f,512.0f);
+	// std::uniform_real_distribution<float> distx(0.0f,511.0f);
+	// std::uniform_real_distribution<float> disty(0.0f,255.0f);
+	// std::uniform_real_distribution<float> distz(0.0f,255.0f); //input values
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+			// // function template generate_canonical
+			//   template<class RealType, size_t bits, class URBG>
+			//   RealType generate_canonical(URBG& g);
+			//   // class template uniform_int_distribution
+			//   template<class IntType = int>
+			//   class uniform_int_distribution;
+			//   // class template uniform_real_distribution
+			//   template<class RealType = double>
+			//   class uniform_real_distribution;
+			//   // class bernoulli_distribution
+			//   class bernoulli_distribution;
+			//   // class template binomial_distribution
+			//   template<class IntType = int>
+			//   class binomial_distribution;
+			//   // class template geometric_distribution
+			//   template<class IntType = int>
+			//   class geometric_distribution;
+			//   // class template negative_binomial_distribution
+			//   template<class IntType = int>
+			//   class negative_binomial_distribution;
+			//   // class template poisson_distribution
+			//   template<class IntType = int>
+			//   class poisson_distribution;
+			//   // class template exponential_distribution
+			//   template<class RealType = double>
+			//   class exponential_distribution;
+			//   // class template gamma_distribution
+			//   template<class RealType = double>
+			//   class gamma_distribution;
+			//   // class template weibull_distribution
+			//   template<class RealType = double>
+			//   class weibull_distribution;
+			//   // class template extreme_value_distribution
+			//   template<class RealType = double>
+			//   class extreme_value_distribution;
+			//   // class template normal_distribution
+			//   template<class RealType = double>
+			//   class normal_distribution;
+			//   // class template lognormal_distribution
+			//   template<class RealType = double>
+			//   class lognormal_distribution;
+			//   // class template chi_squared_distribution
+			//   template<class RealType = double>
+			//   class chi_squared_distribution;
+			//   // class template cauchy_distribution
+			//   template<class RealType = double>
+			//   class cauchy_distribution;
+			//   // class template fisher_f_distribution
+			//   template<class RealType = double>
+			//   class fisher_f_distribution;
+			//   // class template student_t_distribution
+			//   template<class RealType = double>
+			//   class student_t_distribution;
+			//   // class template discrete_distribution
+			//   template<class IntType = int>
+			//   class discrete_distribution;
+			//   // class template piecewise_constant_distribution
+			//   template<class RealType = double>
+			//   class piecewise_constant_distribution;
+			//   // class template piecewise_linear_distribution
+			//   template<class RealType = double>
+			//   class piecewise_linear_distribution;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	std::uniform_real_distribution<float> dist(-6.5f,6.5f);
+	std::uniform_real_distribution<float> scale(0.8f,2.0f);
+
+
+
+
+
+
 
 	for(int i = 0; i < num_nodes; i++)
 	{
-		nodes[i].location = glm::vec3(distx(mt), disty(mt), distz(mt));
+		// nodes[i].location = glm::vec3(distx(mt), disty(mt), distz(mt));
+		nodes[i].location = 50.0f*scale(mt)*glm::normalize(glm::vec3(dist(mt), dist(mt), dist(mt)))+glm::vec3(255,127,127);
+		nodes[i].location.x = 1.7f * (nodes[i].location.x - 255) + 255;
 		verticies.push_back(nodes[i].location);
 	}
 
 	for(int i = 0; i < edge_log.size(); i++)
 	{
-		edge temp(edge_log[i].second, 0.003f*edge_log[i].weight*glm::distance(nodes[edge_log[i].first].location, nodes[edge_log[i].second].location));	//order is destination, weight
+		// edge temp(edge_log[i].second, 0.003f*edge_log[i].weight*glm::distance(nodes[edge_log[i].first].location, nodes[edge_log[i].second].location));	//order is destination, weight
+		edge temp(edge_log[i].second, 0.01f*glm::distance(nodes[edge_log[i].first].location, nodes[edge_log[i].second].location));	//order is destination, weight
 		nodes[edge_log[i].first].add_link(temp);
 
 		temp.destination = edge_log[i].first;
@@ -437,18 +545,44 @@ void graph::output_for_voraldo()
 	std::ofstream file;
 	file.open (std::string("V.txt").c_str());
 
+	float scale = 3.0;
+
+	int total = all_edge_list.size()+mst_edge_list.size()+verticies.size();
+
+	file << "cout << \"writing " << total << " voraldo commands\" << endl;" << endl;
+
+	int count = 0;
+
 	for(auto x : all_edge_list)
-		file << "glm::vec3(" << x.first.x << ", " << x.first.y << ", " << x.first.z << "),   glm::vec3(" << x.second.x << ", " << x.second.y << ", " << x.second.z << "), " << x.weight << endl;
+	{
+			file << "main_block->draw_cylinder(glm::vec3(" << x.first.x << ", " << x.first.y << ", " << x.first.z << "),   glm::vec3(" << x.second.x << ", " << x.second.y << ", " << x.second.z << "), " << /*x.weight/scale*/ 0.618f << ", all_edge_material);" << endl;
+
+			file << "cout << \"\\r" << count << " of " << total << " voraldo commands\";" << endl;
+
+			count++;
+	}
 
 	file << endl << endl;
 
 	for(auto x : mst_edge_list)
-		file <<"glm::vec3("<< x.first.x << ", " << x.first.y << ", " << x.first.z << ")  glm::vec3(" << x.second.x << ", " << x.second.y << ", " << x.second.z << "), " << x.weight << endl;
+	{
+			file << "main_block->draw_cylinder(glm::vec3(" << x.first.x << ", " << x.first.y << ", " << x.first.z << "),   glm::vec3(" << x.second.x << ", " << x.second.y << ", " << x.second.z << "), " << /*x.weight/scale*/ 1.0f << ", mst_edge_material);" << endl;
+
+			file << "cout << \"\\r" << count << " of " << total << " voraldo commands\";" << endl;
+
+			count++;
+	}
 
 	file << endl << endl;
 
 	for(auto x : verticies)
-		file <<"glm::vec3("<< x.x << ", " << x.y << ", " << x.z << ")" << endl;
+	{
+		file <<"main_block->draw_sphere(glm::vec3("<< x.x << ", " << x.y << ", " << x.z << "), 2.0, vertex_material);" << endl;
+
+		file << "cout << \"\\r" << count << " of " << total << " voraldo commands\";" << endl;
+
+		count++;
+	}
 }
 
 
