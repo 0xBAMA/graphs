@@ -505,8 +505,8 @@ void graph::reconstruct()
 
 
 
-	std::uniform_real_distribution<float> dist(-1.3f,1.3f);
-	std::uniform_real_distribution<float> scale(0.3f,2.0f);
+	std::uniform_real_distribution<float> distx(50.0f,300.0f);
+	std::uniform_real_distribution<float> distyz(50.0f,205.0f);
 
 
 
@@ -514,27 +514,42 @@ void graph::reconstruct()
 
 	PerlinNoise p;
 
-	float s = 0.4;
+	float s = 0.05;
 
 
 	for(int i = 0; i < num_nodes; i++)
 	{
 
-		glm::vec3 test = 50.0f*scale(mt)*glm::normalize(glm::vec3(dist(mt), dist(mt), dist(mt))) + glm::vec3(255,127,127);
+		glm::vec3 test = glm::vec3(distx(mt), distyz(mt), distyz(mt));
 
-		while(p.noise(s*test.x, s*test.y, s*test.z) * p.noise(s*test.x/2.0, s*test.y/2.0, s*test.z/2.0) * p.noise(s*test.x/4.0, s*test.y/4.0, s*test.z/4.0) < 0.3)
+
+		while(p.noise(s*test.x, s*test.y, s*test.z) + p.noise(s*test.x/2.0, s*test.y/2.0, s*test.z/2.0) + p.noise(s*test.x/4.0, s*test.y/4.0, s*test.z/4.0) < 1.6)
 		{
-			test = 50.0f*glm::normalize(glm::vec3(dist(mt), dist(mt), dist(mt))) + glm::vec3(255,127,127);
+			cout << p.noise(s*test.x, s*test.y, s*test.z) + p.noise(s*test.x/2.0, s*test.y/2.0, s*test.z/2.0) + p.noise(s*test.x/4.0, s*test.y/4.0, s*test.z/4.0) << endl;
+			test = glm::vec3(distx(mt), distyz(mt), distyz(mt));
 		}
 
 		nodes[i].location = test;
-		nodes[i].location.x = 1.4f * (nodes[i].location.x - 255) + 255;
-
-		// cout << nodes[i].location.x << " " << nodes[i].location.y << " " << nodes[i].location.z << endl;
-
 		verticies.push_back(nodes[i].location);
 
-		cout << "\ri" << std::flush;
+
+
+
+		// glm::vec3 test = 50.0f*scale(mt)*glm::normalize(glm::vec3(dist(mt), dist(mt), dist(mt))) + glm::vec3(255,127,127);
+		//
+		// while(p.noise(s*test.x, s*test.y, s*test.z) * p.noise(s*test.x/2.0, s*test.y/2.0, s*test.z/2.0) * p.noise(s*test.x/4.0, s*test.y/4.0, s*test.z/4.0) < 0.3)
+		// {
+		// 	test = 50.0f*glm::normalize(glm::vec3(dist(mt), dist(mt), dist(mt))) + glm::vec3(255,127,127);
+		// }
+		//
+		// nodes[i].location = test;
+		// nodes[i].location.x = 1.4f * (nodes[i].location.x - 255) + 255;
+		//
+		// // cout << nodes[i].location.x << " " << nodes[i].location.y << " " << nodes[i].location.z << endl;
+		//
+		// verticies.push_back(nodes[i].location);
+		//
+		// cout << "\ri" << std::flush;
 	}
 
 
