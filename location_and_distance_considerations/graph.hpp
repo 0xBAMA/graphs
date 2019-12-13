@@ -594,6 +594,14 @@ void graph::output_for_voraldo()
 
 	int count = 0;
 
+	std::random_device rd;
+	std::mt19937 mt(rd());
+	std::uniform_real_distribution<float> rad(1.4,3.0);
+
+
+
+
+
 	for(auto x : all_edge_list)
 	{
 			file << "main_block->draw_cylinder(glm::vec3(" << x.first.x << ", " << x.first.y << ", " << x.first.z << "),   glm::vec3(" << x.second.x << ", " << x.second.y << ", " << x.second.z << "), " << /*x.weight/scale*/ 0.618f << ", all_edge_material);" << endl;
@@ -618,7 +626,7 @@ void graph::output_for_voraldo()
 
 	for(auto x : verticies)
 	{
-		file <<"main_block->draw_sphere(glm::vec3("<< x.x << ", " << x.y << ", " << x.z << "), 2.0, vertex_material);" << endl;
+		file <<"main_block->draw_sphere(glm::vec3("<< x.x << ", " << x.y << ", " << x.z << "), "<< rad(mt) <<", vertex_material);" << endl;
 
 		file << "cout << \"\\r" << count << " of " << total << " voraldo commands\";" << endl;
 

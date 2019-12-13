@@ -318,15 +318,14 @@ void graph::show_mst()
 
     inMST[u] = true; // Include vertex in MST
 
-    // Traverse all adjacent of u
+    // Traverse all edges adjacent to u
     for (auto x : nodes[u].linkages)
     {
       // Get vertex label and weight of current adjacent of u.
       int v = x.destination;
       int weight = x.weight;
 
-      // If v is not in MST and weight of (u,v) is smaller
-      // than current key of v
+      // If v is not in MST and weight of (u,v) is smaller than current key of v
       if (inMST[v] == false && key[v] > weight)
       {
         // Updating key of v
@@ -406,6 +405,8 @@ void graph::save_to_file(std::string filename)
 
 	file.close();
 }
+
+
 
 //--------------------
 

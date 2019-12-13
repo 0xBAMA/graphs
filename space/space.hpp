@@ -121,8 +121,8 @@ using std::cin;
 		std::random_device rd;
 		std::mt19937 mt(rd());
 
-		std::uniform_real_distribution<float> distx(50.0f,300.0f);
-		std::uniform_real_distribution<float> distyz(50.0f,205.0f);
+		std::uniform_real_distribution<float> distx(25.0f,480.0f);
+		std::uniform_real_distribution<float> distyz(25.0f,230.0f);
 
 
 		//initialize all ids
@@ -174,7 +174,10 @@ void star_system::voraldo_output()
 	{
 		for(int j = 0; j < stars[i].linkages.size(); j++)
 		{
-			file << "main_block->draw_cylinder(glm::vec3(" << stars[stars[i].linkages[j].first].location.x << ", " << stars[stars[i].linkages[j].first].location.y << ", " << stars[stars[i].linkages[j].first].location.z << "),   glm::vec3(" << stars[stars[i].linkages[j].second].location.x << ", " << stars[stars[i].linkages[j].second].location.y << ", " << stars[stars[i].linkages[j].second].location.z << "), " << /*x.weight/scale*/ 0.618f << ", route_material);" << endl;
+			if(stars[i].linkages[j].second > stars[i].linkages[j].first)	//this is a good optimization (fix the naive duplicaitons)
+			{
+				file << "main_block->draw_cylinder(glm::vec3(" << stars[stars[i].linkages[j].first].location.x << ", " << stars[stars[i].linkages[j].first].location.y << ", " << stars[stars[i].linkages[j].first].location.z << "),   glm::vec3(" << stars[stars[i].linkages[j].second].location.x << ", " << stars[stars[i].linkages[j].second].location.y << ", " << stars[stars[i].linkages[j].second].location.z << "), " << /*x.weight/scale*/ 0.618f << ", route_material);" << endl;
+			}
 		}
 	}
 
